@@ -1,0 +1,25 @@
+import {index, sqliteTable, integer, text } from "drizzle-orm/sqlite-core"
+export const listing = sqliteTable("listings", {
+    id: text("id").primaryKey(),
+    price: text("price").notNull(),
+    address: text("address").notNull(),
+    saleType: text("saleType").notNull(),
+    propertyType: text("propertyType").notNull(),
+    city: text("city").notNull(),
+    description: text("description"),
+    bedroomCount: integer("bedroomCount").default(0),
+    bathroomCount: integer("bathroomCount").default(0),
+    squareFootage: text("squareFootage"),
+    lotSize: text("lotSize"),
+}, (listings) => ({
+    saleTypeIndex: index("saleTypeIdx").on(listings.saleType),
+    propertyTypeIndex: index("propertyTypeIdx").on(listings.propertyType),
+    cityIndex: index("cityIdx").on(listings.city),
+    bedroomCountIndex: index("bedroomCountIdx").on(listings.bedroomCount),
+    bathroomCountIndex: index("bathroomCountIdx").on(listings.bathroomCount),
+    saleTypeAndPropertyTypeIndex: index("saleTypeAndPropertyTypeIdx").on(listings.saleType, listings.propertyType),
+    cityAndSaleTypeIndex: index("cityAndSaleTypeIdx").on(listings.city, listings.saleType),
+    cityAndPropertyTypeIndex: index("cityAndPropertyTypeIdx").on(listings.city, listings.propertyType),
+    bedroomCountAndBathroomCountIndex: index("bedroomCountAndBathroomCountIdx").on(listings.bedroomCount, listings.bathroomCount),
+    cityAndSaleTypeAndPropertyTypeIndex: index("cityAndSaleTypeAndPropertyTypeIdx").on(listings.city, listings.saleType, listings.propertyType),
+}))

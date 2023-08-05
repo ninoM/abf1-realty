@@ -1,0 +1,179 @@
+{
+  "version": "5",
+  "dialect": "sqlite",
+  "id": "729f8777-9090-4472-86f8-d5ef9e93836b",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "tables": {
+    "listings": {
+      "name": "listings",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "price": {
+          "name": "price",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "address": {
+          "name": "address",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "saleType": {
+          "name": "saleType",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "propertyType": {
+          "name": "propertyType",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "city": {
+          "name": "city",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "bedroomCount": {
+          "name": "bedroomCount",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": 0
+        },
+        "bathroomCount": {
+          "name": "bathroomCount",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": 0
+        },
+        "squareFootage": {
+          "name": "squareFootage",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "lotSize": {
+          "name": "lotSize",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "saleTypeIdx": {
+          "name": "saleTypeIdx",
+          "columns": [
+            "saleType"
+          ],
+          "isUnique": false
+        },
+        "propertyTypeIdx": {
+          "name": "propertyTypeIdx",
+          "columns": [
+            "propertyType"
+          ],
+          "isUnique": false
+        },
+        "cityIdx": {
+          "name": "cityIdx",
+          "columns": [
+            "city"
+          ],
+          "isUnique": false
+        },
+        "bedroomCountIdx": {
+          "name": "bedroomCountIdx",
+          "columns": [
+            "bedroomCount"
+          ],
+          "isUnique": false
+        },
+        "bathroomCountIdx": {
+          "name": "bathroomCountIdx",
+          "columns": [
+            "bathroomCount"
+          ],
+          "isUnique": false
+        },
+        "saleTypeAndPropertyTypeIdx": {
+          "name": "saleTypeAndPropertyTypeIdx",
+          "columns": [
+            "saleType",
+            "propertyType"
+          ],
+          "isUnique": false
+        },
+        "cityAndSaleTypeIdx": {
+          "name": "cityAndSaleTypeIdx",
+          "columns": [
+            "city",
+            "saleType"
+          ],
+          "isUnique": false
+        },
+        "cityAndPropertyTypeIdx": {
+          "name": "cityAndPropertyTypeIdx",
+          "columns": [
+            "city",
+            "propertyType"
+          ],
+          "isUnique": false
+        },
+        "bedroomCountAndBathroomCountIdx": {
+          "name": "bedroomCountAndBathroomCountIdx",
+          "columns": [
+            "bedroomCount",
+            "bathroomCount"
+          ],
+          "isUnique": false
+        },
+        "cityAndSaleTypeAndPropertyTypeIdx": {
+          "name": "cityAndSaleTypeAndPropertyTypeIdx",
+          "columns": [
+            "city",
+            "saleType",
+            "propertyType"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    }
+  },
+  "enums": {},
+  "_meta": {
+    "schemas": {},
+    "tables": {},
+    "columns": {}
+  }
+}

@@ -1,0 +1,93 @@
+{
+  "name": "abf1-web",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/abf1-web",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nx/next:build",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "outputPath": "dist/apps/abf1-web"
+      },
+      "configurations": {
+        "development": {
+          "outputPath": "apps/abf1-web"
+        },
+        "production": {}
+      }
+    },
+    "serve": {
+      "executor": "@nx/next:server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "abf1-web:build",
+        "dev": true
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "abf1-web:build:development",
+          "dev": true
+        },
+        "production": {
+          "buildTarget": "abf1-web:build:production",
+          "dev": false
+        }
+      }
+    },
+    "export": {
+      "executor": "@nx/next:export",
+      "options": {
+        "buildTarget": "abf1-web:build:production"
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "apps/abf1-web/jest.config.ts",
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/abf1-web/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "migration:generate": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "drizzle-kit generate:sqlite"
+      }
+    },
+    "migration:push": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "apps/abf1-web",
+        "command": "bun run lib/db/migrate.ts"
+      }
+    },
+    "db:push": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "drizzle-kit push:sqlite"
+      }
+    },
+    "db:studio": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "drizzle-kit studio"
+      }
+    }
+  },
+  "tags": []
+}
