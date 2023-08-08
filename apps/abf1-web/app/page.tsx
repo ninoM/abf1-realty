@@ -1,9 +1,4 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardTitle,
-} from '../components/card';
+import { Card, CardDescription, CardTitle } from '../components/card';
 import Icon, { IconProps } from '../components/icon';
 import { db } from '../lib/db';
 import { listing } from '../lib/db/schema';
@@ -21,10 +16,18 @@ export default async function Index() {
         <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
           Listings
         </h2>
-        <div className="p-4 grid grid-cols-6 place-content-center gap-2">
+        <div
+          style={{
+            gridTemplateColumns: 'repeat(auto-fill, minmax(250px,1fr))',
+          }}
+          className="p-4 grid gap-2"
+        >
           {listings.map((listing) => (
             <Card key={listing.id} className="p-2 flex flex-col gap-y-4">
-              <CardDescription>{listing.address}</CardDescription>
+              <CardDescription className='flex flex-row items-center'>
+              <Icon name="map-pin" size={12} />
+                <span>{listing.address}</span>
+              </CardDescription>
               <div>
                 <RoomCount
                   count={listing.bedroomCount ?? 0}
