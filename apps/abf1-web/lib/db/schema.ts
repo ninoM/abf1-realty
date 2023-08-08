@@ -1,7 +1,7 @@
 import {index, sqliteTable, integer, text } from "drizzle-orm/sqlite-core"
 export const listing = sqliteTable("listings", {
     id: text("id").primaryKey(),
-    price: text("price").notNull(),
+    price: integer("price").notNull(),
     address: text("address").notNull(),
     saleType: text("saleType").notNull(),
     propertyType: text("propertyType").notNull(),

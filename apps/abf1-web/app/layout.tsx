@@ -1,5 +1,6 @@
 import { ClerkProvider } from '@clerk/nextjs';
 import './global.css';
+import { ThemeProvider } from '../components/theme-provider';
 
 export const metadata = {
   title: 'ABF1 Realty',
@@ -13,9 +14,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <ClerkProvider>
-        <body>{children}</body>
+        <body>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            {children}
+          </ThemeProvider>
+        </body>
       </ClerkProvider>
     </html>
   );
