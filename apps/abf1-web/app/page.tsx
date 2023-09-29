@@ -7,7 +7,7 @@ export const runtime = 'edge';
 export default async function Index() {
   const listings = await db.select().from(listing).all();
   return (
-    <div>
+    <>
       <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
         ABF1 Realty
       </h1>
@@ -26,6 +26,6 @@ export default async function Index() {
           ))}
         </div>
       </main>
-    </div>
+    </>
   );
 }

@@ -1,8 +1,15 @@
-import { SignOutButton, UserButton, UserProfile } from '@clerk/nextjs';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '../../components/alert-dialog';
 import { Button } from '../../components/button';
 import Icon from '../../components/icon';
-import { db } from '../../lib/db';
-import { listing } from '../../lib/db/schema';
 import ListingCard from '../../components/listing-card';
 import { Separator } from '../../components/separator';
 import {
@@ -14,25 +21,8 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '../../components/sheet';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from '../../components/alert-dialog';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '../../components/table';
-import React from 'react';
+import { db } from '../../lib/db';
+import { listing } from '../../lib/db/schema';
 
 export default async function Dashboard() {
   const listings = await db.select().from(listing).all();

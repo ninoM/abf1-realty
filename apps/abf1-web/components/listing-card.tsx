@@ -1,10 +1,10 @@
-import { InferModel } from 'drizzle-orm';
+import { InferSelectModel } from 'drizzle-orm';
 import { Card, CardDescription, CardTitle } from '../components/card';
 import { listing } from '../lib/db/schema';
 import Icon, { IconProps } from '../components/icon';
 
 type ListingCardProps = {
-  listing: InferModel<typeof listing>;
+  listing: InferSelectModel<typeof listing>;
   showControls?: true;
 };
 
