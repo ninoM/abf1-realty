@@ -1,7 +1,20 @@
 'use client';
 
+import { zodResolver } from '@hookform/resolvers/zod';
+import { CaretSortIcon, CheckIcon } from '@radix-ui/react-icons';
 import { createInsertSchema } from 'drizzle-zod';
-import { useForm } from 'react-hook-form';
+import React from 'react';
+import { UseFormReturn, useForm } from 'react-hook-form';
+import { v4 as uuid } from 'uuid';
+import * as z from 'zod';
+import { Button } from '../../components/button';
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+} from '../../components/command';
 import {
   Form,
   FormControl,
@@ -11,11 +24,11 @@ import {
   FormLabel,
   FormMessage,
 } from '../../components/form';
-import { listing } from '../../lib/db/schema';
-import * as z from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Input } from '../../components/input';
-import { Button } from '../../components/button';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '../../components/popover';
 import {
   Select,
   SelectContent,
@@ -23,22 +36,199 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../../components/select';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '../../components/popover';
-import { CaretSortIcon, CheckIcon } from '@radix-ui/react-icons';
-import {
-  CommandInput,
-  CommandEmpty,
-  CommandGroup,
-  CommandItem,
-  Command,
-} from '../../components/command';
+import { listing } from '../../lib/db/schema';
 import { cn } from '../../lib/utils';
-import { Textarea } from '../../components/textarea';
-import { v4 as uuid } from 'uuid';
+import FormFieldInput from './form-field-input';
+import FormFieldTextarea from './form-field-textarea';
+
+export default function ListingForm() {
+  const form = useForm<z.infer<typeof listingFormSchema>>({
+    resolver: zodResolver(listingFormSchema),
+    defaultValues: { id: uuid() },
+  });
+
+  const handleSubmit = (data: z.infer<typeof listingFormSchema>) => {
+    console.log('adding..', data);
+  };
+
+  return (
+    <ListingFormContext.Provider value={form}>
+      <Form {...form}>
+        <form
+          className="flex flex-col gap-y-2"
+          onSubmit={form.handleSubmit(handleSubmit)}
+        >
+          <div className="flex flex-row w-full gap-x-2">
+            <FormField
+              control={form.control}
+              name="propertyType"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel>Property type</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="condominium">Condo</SelectItem>
+                      <SelectItem value="houseAndLot">House & Lot</SelectItem>
+                      <SelectItem value="lot">Lot</SelectItem>
+                      <SelectItem value="apartment">Apartment</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormDescription>
+                    {form.getFieldState('propertyType').error?.message}
+                  </FormDescription>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="saleType"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel>Rent or Sale</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="rent">For Rent</SelectItem>
+                      <SelectItem value="sell">For Sale</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormDescription>
+                    {form.getFieldState('saleType').error?.message}
+                  </FormDescription>
+                </FormItem>
+              )}
+            />
+          </div>
+          <FormFieldInput
+            name="price"
+            label="Price"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            autoComplete="false"
+          />
+          <FormField
+            control={form.control}
+            name="city"
+            render={({ field }) => (
+              <FormItem className="flex flex-col">
+                <FormLabel>City</FormLabel>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        variant="outline"
+                        role="combobox"
+                        className={cn(
+                          'justify-between',
+                          !field.value && 'text-muted-foreground'
+                        )}
+                      >
+                        {field.value
+                          ? listOfCities.find(
+                              (city) => city.value === field.value
+                            )?.label
+                          : 'Select City'}
+                        <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="p-0">
+                    <Command>
+                      <CommandInput
+                        placeholder="Search city..."
+                        className="h-9"
+                      />
+                      <CommandEmpty>No city found.</CommandEmpty>
+                      <CommandGroup>
+                        {listOfCities.map((city) => (
+                          <CommandItem
+                            value={city.label}
+                            key={city.value}
+                            onSelect={() => {
+                              form.setValue('city', city.value);
+                            }}
+                          >
+                            {city.label}
+                            <CheckIcon
+                              className={cn(
+                                'ml-auto h-4 w-4',
+                                city.value === field.value
+                                  ? 'opacity-100'
+                                  : 'opacity-0'
+                              )}
+                            />
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
+                <FormDescription>
+                  {form.getFieldState('city').error?.message}
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormFieldInput name="address" label="Address" />
+          <div className="flex flex-row gap-x-2">
+            <FormFieldInput
+              name="bedroomCount"
+              label="Bedroom"
+              inputMode="numeric"
+              pattern="[0-9]*"
+              autoComplete="false"
+              formDescription="0 means studio unit."
+            />
+            <FormFieldInput
+              name="bathroomCount"
+              label="Bathroom"
+              inputMode="numeric"
+              pattern="[0-9]*"
+              autoComplete="false"
+            />
+          </div>
+          <div className="flex flex-row gap-x-2">
+            <FormFieldInput
+              name="squareFootage"
+              label="Floor area (sqm)"
+              inputMode="numeric"
+              pattern="[0-9]*"
+              autoComplete="false"
+            />
+            <FormFieldInput
+              name="lotSize"
+              label="Lot area (sqm)"
+              inputMode="numeric"
+              pattern="[0-9]*"
+              autoComplete="false"
+            />
+          </div>
+          <FormFieldTextarea name="description" label="Description" rows={3} />
+          <div className="mt-3 w-full flex justify-end">
+            <Button type="submit">Add</Button>
+          </div>
+        </form>
+        {/* <pre>{JSON.stringify(form.formState.errors, null, 2)}</pre> */}
+      </Form>
+    </ListingFormContext.Provider>
+  );
+}
 
 const listingFormSchema = createInsertSchema(listing, {
   price: z.coerce.number().positive(),
@@ -48,297 +238,23 @@ const listingFormSchema = createInsertSchema(listing, {
   lotSize: z.coerce.number().positive().optional(),
 });
 
-export default function ListingForm() {
-  const form = useForm<z.infer<typeof listingFormSchema>>({
-    resolver: zodResolver(listingFormSchema),
-    defaultValues: {
-      id: uuid(),
-      price: 0,
-      address: '',
-      saleType: '',
-      propertyType: '',
-      city: '',
-      description: '',
-    },
-  });
+export type ListingFormKeys = keyof typeof listingFormSchema['shape'];
 
-  const handleSubmit = (data: z.infer<typeof listingFormSchema>) => {
-    console.log('adding..', data);
-  };
+type ListingFormContextType = UseFormReturn<z.infer<typeof listingFormSchema>>;
 
-  return (
-    <Form {...form}>
-      <form
-        className="flex flex-col gap-y-2"
-        onSubmit={form.handleSubmit(handleSubmit)}
-      >
-        <div className="flex flex-row w-full gap-x-2">
-          <FormField
-            control={form.control}
-            name="propertyType"
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormLabel>Property type</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="condominium">Condo</SelectItem>
-                    <SelectItem value="houseAndLot">House & Lot</SelectItem>
-                    <SelectItem value="lot">Lot</SelectItem>
-                    <SelectItem value="apartment">Apartment</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormDescription>
-                  {form.getFieldState('propertyType').error?.message}
-                </FormDescription>
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="saleType"
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormLabel>Rent or Sale</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="rent">For Rent</SelectItem>
-                    <SelectItem value="sell">For Sale</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormDescription>
-                  {form.getFieldState('saleType').error?.message}
-                </FormDescription>
-              </FormItem>
-            )}
-          />
-        </div>
-        <FormField
-          control={form.control}
-          name="price"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Price</FormLabel>
-              <FormControl>
-                <Input
-                  {...field}
-                  inputMode="numeric"
-                  pattern="[0-9]*"
-                  autoComplete="false"
-                />
-              </FormControl>
-              <FormDescription>
-                {form.getFieldState('price').error?.message}
-              </FormDescription>
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="city"
-          render={({ field }) => (
-            <FormItem className="flex flex-col">
-              <FormLabel>City</FormLabel>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <FormControl>
-                    <Button
-                      variant="outline"
-                      role="combobox"
-                      className={cn(
-                        'justify-between',
-                        !field.value && 'text-muted-foreground'
-                      )}
-                    >
-                      {field.value
-                        ? listOfCities.find(
-                            (city) => city.value === field.value
-                          )?.label
-                        : 'Select City'}
-                      <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                    </Button>
-                  </FormControl>
-                </PopoverTrigger>
-                <PopoverContent className="p-0">
-                  <Command>
-                    <CommandInput
-                      placeholder="Search city..."
-                      className="h-9"
-                    />
-                    <CommandEmpty>No city found.</CommandEmpty>
-                    <CommandGroup>
-                      {listOfCities.map((city) => (
-                        <CommandItem
-                          value={city.label}
-                          key={city.value}
-                          onSelect={() => {
-                            form.setValue('city', city.value);
-                          }}
-                        >
-                          {city.label}
-                          <CheckIcon
-                            className={cn(
-                              'ml-auto h-4 w-4',
-                              city.value === field.value
-                                ? 'opacity-100'
-                                : 'opacity-0'
-                            )}
-                          />
-                        </CommandItem>
-                      ))}
-                    </CommandGroup>
-                  </Command>
-                </PopoverContent>
-              </Popover>
-              <FormDescription>
-                {form.getFieldState('city').error?.message}
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="address"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Address</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormDescription>
-                {form.getFieldState('address').error?.message}
-              </FormDescription>
-            </FormItem>
-          )}
-        />
-        <div className="flex flex-row gap-x-2">
-          <FormField
-            control={form.control}
-            name="bedroomCount"
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormLabel>Bedroom</FormLabel>
-                <FormControl>
-                  <Input
-                    {...field}
-                    value={field.value || ''}
-                    inputMode="numeric"
-                    pattern="[0-9]*"
-                    autoComplete="false"
-                  />
-                </FormControl>
-                <FormDescription>
-                  0 means studio unit.
-                  {form.getFieldState('bedroomCount').error?.message}
-                </FormDescription>
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="bathroomCount"
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormLabel>Bathroom</FormLabel>
-                <FormControl>
-                  <Input
-                    {...field}
-                    value={field.value || ''}
-                    inputMode="numeric"
-                    pattern="[0-9]*"
-                    autoComplete="false"
-                  />
-                </FormControl>
-                <FormDescription>
-                  {form.getFieldState('bathroomCount').error?.message}
-                </FormDescription>
-              </FormItem>
-            )}
-          />
-        </div>
-        <div className="flex flex-row gap-x-2">
-          <FormField
-            control={form.control}
-            name="squareFootage"
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormLabel>Floor area (sqm)</FormLabel>
-                <FormControl>
-                  <Input
-                    {...field}
-                    value={field.value || ''}
-                    inputMode="numeric"
-                    pattern="[0-9]*"
-                    autoComplete="false"
-                  />
-                </FormControl>
-                <FormDescription>
-                  {form.getFieldState('squareFootage').error?.message}
-                </FormDescription>
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="lotSize"
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormLabel>Lot area (sqm)</FormLabel>
-                <FormControl>
-                  <Input
-                    {...field}
-                    value={field.value || ''}
-                    inputMode="numeric"
-                    pattern="[0-9]*"
-                    autoComplete="false"
-                  />
-                </FormControl>
-                <FormDescription>
-                  {form.getFieldState('lotSize').error?.message}
-                </FormDescription>
-              </FormItem>
-            )}
-          />
-        </div>
-        <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Description</FormLabel>
-              <FormControl>
-                <Textarea {...field} value={field.value ?? ''} rows={3} />
-              </FormControl>
-              <FormDescription>
-                {form.getFieldState('description').error?.message}
-              </FormDescription>
-            </FormItem>
-          )}
-        />
-        <div className="mt-3 w-full flex justify-end">
-          <Button type="submit">Add</Button>
-        </div>
-      </form>
-      {/* <pre>{JSON.stringify(form.formState.errors, null, 2)}</pre> */}
-    </Form>
-  );
-}
+const ListingFormContext = React.createContext<ListingFormContextType | null>(
+  null
+);
+
+export const useListingFormContext = () => {
+  const context = React.useContext(ListingFormContext);
+  if (!context) {
+    throw new Error(
+      'useListingFormContext must be used within a ListingFormContextProvider'
+    );
+  }
+  return context;
+};
 
 const listOfCities = [
   { label: 'Baguio', value: 'baguio' },
