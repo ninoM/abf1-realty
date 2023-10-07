@@ -1,11 +1,12 @@
 'use client';
 
 import {
-    FormControl,
-    FormDescription,
-    FormField,
-    FormItem,
-    FormLabel,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from '../../components/form';
 import { Textarea, TextareaProps } from '../../components/textarea';
 import { ListingFormKeys, useListingFormContext } from './listing-form';
@@ -33,10 +34,8 @@ export default function FormFieldTextarea({
           <FormControl>
             <Textarea {...field} value={field.value ?? ''} {...props} />
           </FormControl>
-          <FormDescription>
-            {formDescription}
-            {form.getFieldState(name).error?.message}
-          </FormDescription>
+          <FormDescription>{formDescription}</FormDescription>
+          <FormMessage />
         </FormItem>
       )}
     />

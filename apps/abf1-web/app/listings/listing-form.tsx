@@ -18,11 +18,10 @@ import {
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
+  FormMessage
 } from '../../components/form';
 import {
   Popover,
@@ -81,9 +80,7 @@ export default function ListingForm() {
                       <SelectItem value="apartment">Apartment</SelectItem>
                     </SelectContent>
                   </Select>
-                  <FormDescription>
-                    {form.getFieldState('propertyType').error?.message}
-                  </FormDescription>
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -107,9 +104,7 @@ export default function ListingForm() {
                       <SelectItem value="sell">For Sale</SelectItem>
                     </SelectContent>
                   </Select>
-                  <FormDescription>
-                    {form.getFieldState('saleType').error?.message}
-                  </FormDescription>
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -178,9 +173,6 @@ export default function ListingForm() {
                     </Command>
                   </PopoverContent>
                 </Popover>
-                <FormDescription>
-                  {form.getFieldState('city').error?.message}
-                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -232,10 +224,22 @@ export default function ListingForm() {
 
 const listingFormSchema = createInsertSchema(listing, {
   price: z.coerce.number().positive(),
-  bedroomCount: z.coerce.number().positive().optional(),
-  bathroomCount: z.coerce.number().positive().optional(),
-  squareFootage: z.coerce.number().positive().optional(),
-  lotSize: z.coerce.number().positive().optional(),
+  bedroomCount: z
+    .string()
+    .transform((val) => Number(val) || undefined)
+    .optional(),
+  bathroomCount: z
+    .string()
+    .transform((val) => Number(val) || undefined)
+    .optional(),
+  squareFootage: z
+    .string()
+    .transform((val) => Number(val) || undefined)
+    .optional(),
+  lotSize: z
+    .string()
+    .transform((val) => Number(val) || undefined)
+    .optional(),
 });
 
 export type ListingFormKeys = keyof typeof listingFormSchema['shape'];

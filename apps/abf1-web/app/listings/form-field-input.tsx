@@ -6,6 +6,7 @@ import {
   FormLabel,
   FormControl,
   FormDescription,
+  FormMessage,
 } from '../../components/form';
 import { Input, InputProps } from '../../components/input';
 import { ListingFormKeys, useListingFormContext } from './listing-form';
@@ -36,10 +37,8 @@ export default function FormFieldInput({
           <FormControl>
             <Input {...field} value={field.value ?? ''} {...props} />
           </FormControl>
-          <FormDescription>
-            {formDescription}
-            {form.getFieldState(name).error?.message}
-          </FormDescription>
+          <FormDescription>{formDescription}</FormDescription>
+          <FormMessage />
         </FormItem>
       )}
     />
