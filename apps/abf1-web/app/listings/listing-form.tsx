@@ -1,12 +1,8 @@
 'use client';
 
-import { zodResolver } from '@hookform/resolvers/zod';
 import { CaretSortIcon, CheckIcon } from '@radix-ui/react-icons';
-import { createInsertSchema } from 'drizzle-zod';
 import React from 'react';
 import { UseFormReturn, useForm } from 'react-hook-form';
-import { v4 as uuid } from 'uuid';
-import * as z from 'zod';
 import { Button } from '../../components/button';
 import {
   Command,
@@ -21,7 +17,7 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage
+  FormMessage,
 } from '../../components/form';
 import {
   Popover,
@@ -35,19 +31,39 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../../components/select';
+import { useToast } from '../../components/use-toast';
 import { listing } from '../../lib/db/schema';
 import { cn } from '../../lib/utils';
+import createListingAction from './create/createListingAction';
 import FormFieldInput from './form-field-input';
 import FormFieldTextarea from './form-field-textarea';
 
-export default function ListingForm() {
-  const form = useForm<z.infer<typeof listingFormSchema>>({
-    resolver: zodResolver(listingFormSchema),
-    defaultValues: { id: uuid() },
-  });
+type CreateListing = Omit<typeof listing.$inferInsert, 'id'>;
 
-  const handleSubmit = (data: z.infer<typeof listingFormSchema>) => {
+export default function ListingForm() {
+  const form = useForm<CreateListing>();
+  const [loading, setLoading] = React.useState(false);
+  const { toast } = useToast();
+
+  const handleSubmit = async (data: CreateListing) => {
+    if (loading) return;
     console.log('adding..', data);
+    setLoading(true);
+    const response = await createListingAction(data);
+
+    if (response.status === 'error') {
+      toast({
+        title: 'Error',
+        description: response.message,
+        variant: 'destructive',
+      });
+    } else {
+      toast({ title: 'Success', description: 'Listing added.' });
+      form.reset();
+    }
+
+    setLoading(false);
+    console.log('done');
   };
 
   return (
@@ -65,6 +81,7 @@ export default function ListingForm() {
                 <FormItem className="w-full">
                   <FormLabel>Property type</FormLabel>
                   <Select
+                    required
                     onValueChange={field.onChange}
                     defaultValue={field.value}
                   >
@@ -91,6 +108,7 @@ export default function ListingForm() {
                 <FormItem className="w-full">
                   <FormLabel>Rent or Sale</FormLabel>
                   <Select
+                    required
                     onValueChange={field.onChange}
                     defaultValue={field.value}
                   >
@@ -145,6 +163,7 @@ export default function ListingForm() {
                   <PopoverContent className="p-0">
                     <Command>
                       <CommandInput
+                        required // TODO: not working
                         placeholder="Search city..."
                         className="h-9"
                       />
@@ -177,7 +196,7 @@ export default function ListingForm() {
               </FormItem>
             )}
           />
-          <FormFieldInput name="address" label="Address" />
+          <FormFieldInput required name="address" label="Address" />
           <div className="flex flex-row gap-x-2">
             <FormFieldInput
               name="bedroomCount"
@@ -213,7 +232,7 @@ export default function ListingForm() {
           </div>
           <FormFieldTextarea name="description" label="Description" rows={3} />
           <div className="mt-3 w-full flex justify-end">
-            <Button type="submit">Add</Button>
+            <Button type="submit">Submit</Button>
           </div>
         </form>
         {/* <pre>{JSON.stringify(form.formState.errors, null, 2)}</pre> */}
@@ -222,29 +241,9 @@ export default function ListingForm() {
   );
 }
 
-const listingFormSchema = createInsertSchema(listing, {
-  price: z.coerce.number().positive(),
-  bedroomCount: z
-    .string()
-    .transform((val) => Number(val) || undefined)
-    .optional(),
-  bathroomCount: z
-    .string()
-    .transform((val) => Number(val) || undefined)
-    .optional(),
-  squareFootage: z
-    .string()
-    .transform((val) => Number(val) || undefined)
-    .optional(),
-  lotSize: z
-    .string()
-    .transform((val) => Number(val) || undefined)
-    .optional(),
-});
+export type ListingFormKeys = keyof Omit<typeof listing.$inferInsert, 'id'>;
 
-export type ListingFormKeys = keyof typeof listingFormSchema['shape'];
-
-type ListingFormContextType = UseFormReturn<z.infer<typeof listingFormSchema>>;
+type ListingFormContextType = UseFormReturn<CreateListing>;
 
 const ListingFormContext = React.createContext<ListingFormContextType | null>(
   null

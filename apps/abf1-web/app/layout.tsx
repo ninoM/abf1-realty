@@ -2,6 +2,7 @@ import { dark } from '@clerk/themes';
 import { ClerkProvider } from '@clerk/nextjs';
 import './global.css';
 import { ThemeProvider } from '../components/theme-provider';
+import { Toaster } from '../components/toaster';
 
 export const metadata = {
   title: 'ABF1 Realty',
@@ -30,6 +31,7 @@ export default function RootLayout({
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             {children}
           </ThemeProvider>
+          <Toaster />
         </body>
       </ClerkProvider>
     </html>
