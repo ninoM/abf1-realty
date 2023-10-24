@@ -47,7 +47,6 @@ export default function ListingForm() {
 
   const handleSubmit = async (data: CreateListing) => {
     if (loading) return;
-    console.log('adding..', data);
     setLoading(true);
     const response = await createListingAction(data);
 
@@ -57,15 +56,35 @@ export default function ListingForm() {
         description: response.message,
         variant: 'destructive',
       });
-    } else {
+    } else if (
+      response.status === 'form-error' &&
+      Object.keys(response.formErrors).length > 0
+    ) {
+      toast({
+        title: 'Form error',
+        description: 'Please check the form for errors.',
+        variant: 'destructive',
+      });
+      Object.keys(response.formErrors).forEach((fieldName: any) => {
+        form.setError(fieldName, {
+          type: 'Validation error',
+          // @ts-expect-error TODO: fix this
+          message: response.formErrors[fieldName]?.[0],
+        });
+      });
+    } else if (response.status === 'success') {
       toast({ title: 'Success', description: 'Listing added.' });
       form.reset();
+    } else {
+      toast({
+        title: 'Error',
+        description: 'Something went wrong.',
+        variant: 'destructive',
+      });
     }
-
-    setLoading(false);
-    console.log('done');
   };
 
+  // TODO: use valueAsNumber for numeric inputs
   return (
     <ListingFormContext.Provider value={form}>
       <Form {...form}>
@@ -84,10 +103,12 @@ export default function ListingForm() {
                     required
                     onValueChange={field.onChange}
                     defaultValue={field.value}
+                    value={field.value}
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue />
+                        {/* TODO: fix zero-width space as hack */}
+                        {field.value ? <SelectValue /> : '​'}
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -111,10 +132,12 @@ export default function ListingForm() {
                     required
                     onValueChange={field.onChange}
                     defaultValue={field.value}
+                    value={field.value}
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue />
+                        {/* TODO: fix zero-width space as hack */}
+                        {field.value ? <SelectValue /> : '​'}
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -133,6 +156,7 @@ export default function ListingForm() {
             inputMode="numeric"
             pattern="[0-9]*"
             autoComplete="false"
+            required
           />
           <FormField
             control={form.control}
