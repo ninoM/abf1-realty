@@ -37,6 +37,7 @@ import { cn } from '../../lib/utils';
 import createListingAction from './create/createListingAction';
 import FormFieldInput from './form-field-input';
 import FormFieldTextarea from './form-field-textarea';
+import Link from 'next/link';
 
 type CreateListing = Omit<typeof listing.$inferInsert, 'id'>;
 
@@ -255,7 +256,12 @@ export default function ListingForm() {
             />
           </div>
           <FormFieldTextarea name="description" label="Description" rows={3} />
-          <div className="mt-3 w-full flex justify-end">
+          <div className="mt-3 w-full flex justify-between">
+            <Link replace href="/dashboard">
+              <Button type="button" variant="secondary">
+                Cancel
+              </Button>
+            </Link>
             <Button type="submit">Submit</Button>
           </div>
         </form>

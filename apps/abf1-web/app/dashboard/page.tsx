@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -37,12 +38,14 @@ export default async function Dashboard() {
           <span>Add listing</span>
           <Icon name="plus" size={16} />
         </Button>
-        <Button
-          className="md:hidden fixed right-4 bottom-4 h-12 w-12 rounded-full"
-          size="icon"
-        >
-          <Icon name="plus" size={28} />
-        </Button>
+        <Link href="/listings/create">
+          <Button
+            className="md:hidden fixed right-4 bottom-4 h-12 w-12 rounded-full"
+            size="icon"
+          >
+            <Icon name="plus" size={28} />
+          </Button>
+        </Link>
       </section>
       <section
         style={{
@@ -83,7 +86,7 @@ export default async function Dashboard() {
                   <SheetHeader>
                     <SheetTitle>Delete listing?</SheetTitle>
                   </SheetHeader>
-                  <SheetFooter className='flex flex-col gap-y-3'>
+                  <SheetFooter className="flex flex-col gap-y-3">
                     <SheetClose asChild>
                       <Button variant="destructive">Continue</Button>
                     </SheetClose>
@@ -95,9 +98,12 @@ export default async function Dashboard() {
               </Sheet>
               <Button variant="secondary">Edit</Button>
             </div>
-            {i % 2 === 0 && i < listings.length - 1 ? <Separator className='md:hidden' /> : null}
+            {i < listings.length - 1 ? (
+              <Separator className="md:hidden" />
+            ) : null}
           </div>
         ))}
+        <div className="mt-16 md:hidden" />
       </section>
     </>
   );
