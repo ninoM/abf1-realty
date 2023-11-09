@@ -7,8 +7,8 @@ import {
   FormControl,
   FormDescription,
   FormMessage,
-} from '../../components/form';
-import { Input, InputProps } from '../../components/input';
+} from '@web/components/form';
+import { Input, InputProps } from '@web/components/input';
 import { ListingFormKeys, useListingFormContext } from './listing-form';
 
 type FormFieldInputProps = InputProps & {

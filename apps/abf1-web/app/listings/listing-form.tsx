@@ -10,7 +10,7 @@ import {
   CommandGroup,
   CommandInput,
   CommandItem,
-} from '../../components/command';
+} from '@web/components/command';
 import {
   Form,
   FormControl,
@@ -18,22 +18,22 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '../../components/form';
+} from '@web/components/form';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '../../components/popover';
+} from '@web/components/popover';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '../../components/select';
-import { useToast } from '../../components/use-toast';
-import { listing } from '../../lib/db/schema';
-import { cn } from '../../lib/utils';
+} from '@web/components/select';
+import { useToast } from '@web/components/use-toast';
+import { listing } from '@web/lib/db/schema';
+import { cn } from '@web/lib/utils';
 import createListingAction from './create/createListingAction';
 import FormFieldInput from './form-field-input';
 import FormFieldTextarea from './form-field-textarea';

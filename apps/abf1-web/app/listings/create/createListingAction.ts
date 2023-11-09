@@ -1,8 +1,8 @@
 'use server';
 import { revalidatePath } from 'next/cache';
-import { db } from '../../../lib/db';
+import { db } from '@web/lib/db';
 import { createInsertSchema } from 'drizzle-zod';
-import { listing } from '../../../lib/db/schema';
+import { listing } from '@web/lib/db/schema';
 import * as z from 'zod';
 import { LibsqlError } from '@libsql/client';
 import { v4 as uuid } from 'uuid';

@@ -1,6 +1,6 @@
-import ListingCard from '../components/listing-card';
-import { db } from '../lib/db';
-import { listing } from '../lib/db/schema';
+import ListingCard from '@web/components/listing-card';
+import { db } from '@web/lib/db';
+import { listing } from '@web/lib/db/schema';
 
 export const runtime = 'edge';
 

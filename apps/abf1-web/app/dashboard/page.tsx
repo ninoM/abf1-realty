@@ -8,11 +8,11 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '../../components/alert-dialog';
-import { Button } from '../../components/button';
-import Icon from '../../components/icon';
-import ListingCard from '../../components/listing-card';
-import { Separator } from '../../components/separator';
+} from '@web/components/alert-dialog';
+import { Button } from '@web/components/button';
+import Icon from '@web/components/icon';
+import ListingCard from '@web/components/listing-card';
+import { Separator } from '@web/components/separator';
 import {
   Sheet,
   SheetClose,
@@ -21,9 +21,9 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from '../../components/sheet';
-import { db } from '../../lib/db';
-import { listing } from '../../lib/db/schema';
+} from '@web/components/sheet';
+import { db } from '@web/lib/db';
+import { listing } from '@web/lib/db/schema';
 
 export default async function Dashboard() {
   const listings = await db.select().from(listing).all();

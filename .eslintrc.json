@@ -10,13 +10,14 @@
           "error",
           {
             "enforceBuildableLibDependency": true,
-            "allow": [],
+            "allow": ["@web/*"],
             "depConstraints": [
               {
                 "sourceTag": "*",
                 "onlyDependOnLibsWithTags": ["*"]
               }
-            ]
+            ],
+            "allowCircularDependencies": true
           }
         ]
       }

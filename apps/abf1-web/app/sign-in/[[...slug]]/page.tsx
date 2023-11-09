@@ -1,5 +1,4 @@
 import { SignIn as CSignIn } from '@clerk/nextjs';
-import { Button } from "../../../components/button";
 
 export default function SignIn() {
   return (

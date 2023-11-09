@@ -14,7 +14,9 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@web/*": ["apps/abf1-web/*"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }

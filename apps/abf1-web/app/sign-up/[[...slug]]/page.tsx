@@ -1,5 +1,5 @@
 import { SignInButton } from '@clerk/nextjs';
-import { Button } from '../../../components/button';
+import { Button } from '@web/components/button';
 
 export default function SignUp() {
   return (

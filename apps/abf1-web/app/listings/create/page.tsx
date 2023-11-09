@@ -1,4 +1,4 @@
-import ListingForm from '../listing-form';
+import ListingForm from "../listing-form";
 
 export default function CreateListing() {
   return (

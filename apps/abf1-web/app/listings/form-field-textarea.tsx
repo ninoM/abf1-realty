@@ -7,8 +7,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '../../components/form';
-import { Textarea, TextareaProps } from '../../components/textarea';
+} from '@web/components/form';
+import { Textarea, TextareaProps } from '@web/components/textarea';
 import { ListingFormKeys, useListingFormContext } from './listing-form';
 
 type FormFieldTextareaProps = TextareaProps & {
