@@ -1,9 +1,6 @@
 'use client';
 
 import { CaretSortIcon, CheckIcon } from '@radix-ui/react-icons';
-import React from 'react';
-import { UseFormReturn, useForm } from 'react-hook-form';
-import { Button } from '../../components/button';
 import {
   Command,
   CommandEmpty,
@@ -34,22 +31,34 @@ import {
 import { useToast } from '@web/components/use-toast';
 import { listing } from '@web/lib/db/schema';
 import { cn } from '@web/lib/utils';
-import createListingAction from './create/createListingAction';
+import Link from 'next/link';
+import React from 'react';
+import { UseFormReturn, useForm } from 'react-hook-form';
+import { Button } from '../../components/button';
+import { CreateListingResponse } from './create/page';
 import FormFieldInput from './form-field-input';
 import FormFieldTextarea from './form-field-textarea';
-import Link from 'next/link';
 
-type CreateListing = Omit<typeof listing.$inferInsert, 'id'>;
+type CreateListingData = typeof listing.$inferInsert;
 
-export default function ListingForm() {
-  const form = useForm<CreateListing>();
+type ListingFormProps = {
+  defaultValues?: Partial<CreateListingData>;
+  onSubmit: (
+    data: Omit<CreateListingData, 'id'>,
+  ) => Promise<CreateListingResponse>;
+};
+export default function ListingForm({
+  defaultValues,
+  onSubmit,
+}: ListingFormProps) {
+  const form = useForm<CreateListingData>({ defaultValues });
   const [loading, setLoading] = React.useState(false);
   const { toast } = useToast();
 
-  const handleSubmit = async (data: CreateListing) => {
+  const handleSubmit = async (data: Omit<CreateListingData, 'id'>) => {
     if (loading) return;
     setLoading(true);
-    const response = await createListingAction(data);
+    const response = await onSubmit(data);
 
     if (response.status === 'error') {
       toast({
@@ -173,12 +182,12 @@ export default function ListingForm() {
                         role="combobox"
                         className={cn(
                           'justify-between',
-                          !field.value && 'text-muted-foreground'
+                          !field.value && 'text-muted-foreground',
                         )}
                       >
                         {field.value
                           ? listOfCities.find(
-                              (city) => city.value === field.value
+                              (city) => city.value === field.value,
                             )?.label
                           : 'Select City'}
                         <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -208,7 +217,7 @@ export default function ListingForm() {
                                 'ml-auto h-4 w-4',
                                 city.value === field.value
                                   ? 'opacity-100'
-                                  : 'opacity-0'
+                                  : 'opacity-0',
                               )}
                             />
                           </CommandItem>
@@ -273,17 +282,17 @@ export default function ListingForm() {
 
 export type ListingFormKeys = keyof Omit<typeof listing.$inferInsert, 'id'>;
 
-type ListingFormContextType = UseFormReturn<CreateListing>;
+type ListingFormContextType = UseFormReturn<CreateListingData>;
 
 const ListingFormContext = React.createContext<ListingFormContextType | null>(
-  null
+  null,
 );
 
 export const useListingFormContext = () => {
   const context = React.useContext(ListingFormContext);
   if (!context) {
     throw new Error(
-      'useListingFormContext must be used within a ListingFormContextProvider'
+      'useListingFormContext must be used within a ListingFormContextProvider',
     );
   }
   return context;
